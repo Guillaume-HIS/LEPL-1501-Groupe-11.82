@@ -18,9 +18,9 @@ wn = Tk()
 
 def window_init(wn_name):
     """
-    Donne un nom, une taille par defaut et minimum et une couleur de fond a la fenetre
+    Donne un nom, une taille par defaut et minimum et une couleur de fond gets la fenetre
 
-    :param wn_name: nom de la fenetre a modifier
+    :param wn_name: nom de la fenetre gets modifier
 
     :return: -
     """
@@ -37,7 +37,7 @@ def slide0():
                                           - distance variable, simulation de l'angle d'inclinaison en fonction
                                             de la charge
 
-    :return: None
+    :return: le type de simulation : 1 ou 2
     """
 
     def choice_all_static():
@@ -52,8 +52,15 @@ def slide0():
         var.set(1)
         return
 
+    def on_quit():
+        nonlocal sim_type
+        sim_type = None
+        var.set(1)
+        return
+
     var = IntVar()
     sim_type = 0
+    wn.protocol("WM_DELETE_WINDOW", on_quit)
 
     # Ajoute le frame
     frame0 = Frame(wn, bg="#3c3f41")
@@ -66,7 +73,7 @@ def slide0():
     frame0_1.grid_rowconfigure(3)
     frame0_1.grid_columnconfigure(2)
 
-    # Cree le bouton correspondant a la sim avec d fixe ainsi que son label et les paque dans frame0_1
+    # Cree le bouton correspondant gets la sim avec d fixe ainsi que son label et les paque dans frame0_1
     label_all_static = Label(frame0_1, text="Distance et charge fixe", font=("Courrier", 20),
                              bg="#3c3f41", fg="white")
     label_all_static.grid(row=0, column=0, padx=50)
@@ -75,7 +82,7 @@ def slide0():
     button_all_static = Button(frame0_1, image=picture1, bg="#99cccc", fg="black", command=choice_all_static)
     button_all_static.grid(row=1, column=0, padx=50)
 
-    # Cree le bouton correspondant a la sim avec d variable ainsi que son label et les paque dans frame0_1
+    # Cree le bouton correspondant gets la sim avec d variable ainsi que son label et les paque dans frame0_1
     label_variable = Label(frame0_1, text="Distance variable et chage fixe", font=("Courrier", 20),
                            bg="#3c3f41", fg="white")
     label_variable.grid(row=0, column=1, padx=50)
@@ -106,21 +113,18 @@ def slide1(sim_type, dico_grue):
     """
     Premier "slide", premiere page que la fenetre va afficher apres le choix du type de simulation
 
-    :return: le tuple input contenant les infos que l'utilisateur a entre
+    :return: le tuple input contenant les infos que l'utilisateur gets entre
     """
 
     def place_title():
 
-        # Definit l'image et le texte a afficher en fonction du type de simulation
+        # Definit l'image et le texte gets afficher en fonction du type de simulation
         if sim_type == 1:
             img_name = "image_enoncee_all_static.png"
             txt = "Simulation avec distance et charge fixes"
         elif sim_type == 2:
             img_name = "image_enoncee_d_variable.png"
             txt = "Simulation avec distance variable et charge fixe"
-        elif sim_type == 3:
-            img_name = "image_enoncee_m3_variable.png"
-            txt = "Simulation avec distance fixe et charge variable"
         else:
             img_name = None
             txt = None
@@ -138,7 +142,7 @@ def slide1(sim_type, dico_grue):
         panel1.pack()
 
     def get_inputs(ntng=None):
-        """ Recupere ce qui a ete entre dans les entry box et met tout dans le tuple de fonction inputs et definit var
+        """ Recupere ce qui gets ete entre dans les entry box et met tout dans le tuple de fonction inputs et definit var
 
         :return: -
         """
@@ -149,13 +153,9 @@ def slide1(sim_type, dico_grue):
             if sim_type == 1:
                 tpl = float(entry_l.get()), float(entry_d.get()), None, float(entry_m1.get()), \
                       float(entry_m2.get()), float(entry_m3.get()), None, float(entry_h1.get()), float(entry_h2.get())
-            elif sim_type == 2:
+            else:
                 tpl = float(entry_l.get()), float(entry_d1.get()), float(entry_d2.get()), float(entry_m1.get()), \
                       float(entry_m2.get()), float(entry_m3.get()), None, float(entry_h1.get()), float(entry_h2.get())
-            else:
-                tpl = float(entry_l.get()), float(entry_d.get()), None, float(entry_m1.get()), \
-                      float(entry_m2.get()), float(entry_m3_start.get()), float(entry_m3_end.get()), \
-                      float(entry_h1.get()), float(entry_h2.get())
             frame1.forget()
             inputs = tpl
             var.set(1)
@@ -204,8 +204,6 @@ def slide1(sim_type, dico_grue):
             boxes = [entry_l, entry_d, entry_m1, entry_m2, entry_m3, entry_h1, entry_h2]
         elif sim_type == 2:
             boxes = [entry_l, entry_d1, entry_d2, entry_m1, entry_m2, entry_m3, entry_h1, entry_h2]
-        elif sim_type == 3:
-            boxes = [entry_l, entry_d, entry_m1, entry_m2, entry_m3_start, entry_m3_end, entry_h1, entry_h2]
 
         for box in boxes:
             box.bind("<Return>", get_inputs)
@@ -237,10 +235,17 @@ def slide1(sim_type, dico_grue):
         entry_h2.delete(0, END)
         entry_h2.insert(0, str(dico_grue["h2"]))
 
+    def on_quit():
+        nonlocal inputs
+        inputs = 1
+        var.set(1)
+        return
+
     # Cree deux variables locales
     var = IntVar()
     inputs = 0
     our_crane = False
+    wn.protocol("WM_DELETE_WINDOW", on_quit)
 
     # Ajoute frame1
     frame1 = Frame(wn, bg="#3c3f41")
@@ -304,32 +309,12 @@ def slide1(sim_type, dico_grue):
     entry_m2 = Entry(frame1_1)
     entry_m2.grid(row=4, column=1, padx=25)
 
-    # Entry boxes de m3 (depart) et m3 (fin) pour sim avec m3 variable
-    if sim_type == 3:
-        # m3 de depart
-        label_m3_start = Label(frame1_1, text="Valeur de m3 (depart) [kg]:", font=("Courrier", 10),
-                               bg="#3c3f41", fg="white")
-        label_m3_start.grid(row=6, column=1, padx=25)
-        entry_m3_start = Entry(frame1_1)
-        entry_m3_start.grid(row=7, column=1, padx=25)
-        # Vide pour remplir le rang 7 de la grille*
-        nothing = Label(frame1_1, bg="#3c3f41")
-        nothing.grid(row=8, column=1, padx=25)
-
-        # m3 de fin
-        label_m3_end = Label(frame1_1, text="Valeur de m3 (fin) [kg]:", font=("Courrier", 10),
-                             bg="#3c3f41", fg="white")
-        label_m3_end.grid(row=9, column=1, padx=25)
-        entry_m3_end = Entry(frame1_1)
-        entry_m3_end.grid(row=10, column=1, padx=25)
-
-    # Entry box de m3 et son titre pour sims avec m3 fixe
-    else:
-        label_m3 = Label(frame1_1, text="Valeur de m3 [kg]:", font=("Courrier", 10),
-                         bg="#3c3f41", fg="white")
-        label_m3.grid(row=6, column=1, padx=25)
-        entry_m3 = Entry(frame1_1)
-        entry_m3.grid(row=7, column=1, padx=25)
+    # Entry box de m3 et son titre
+    label_m3 = Label(frame1_1, text="Valeur de m3 [kg]:", font=("Courrier", 10),
+                     bg="#3c3f41", fg="white")
+    label_m3.grid(row=6, column=1, padx=25)
+    entry_m3 = Entry(frame1_1)
+    entry_m3.grid(row=7, column=1, padx=25)
 
     # Entry box de h1 et son titre
     label_h1 = Label(frame1_1, text="Valeur de h1 [m]:", font=("Courrier", 10),
@@ -390,14 +375,14 @@ def slide_d_static(infos, c_init, t, lsts_pst):
     :param infos: tuples des infos du systeme (voir main_simulation pour son contenu)
     :param c_init:
     :param t: tableau des temps
-    :param lsts_pst: tuple contenant les listes x, v et a representant respectivement l'angle d'inclinaison, la vitesse
+    :param lsts_pst: tuple contenant les listes x, v et gets representant respectivement l'angle d'inclinaison, la vitesse
                        angulaire et l'acceleration angulaire par rapport au temps
 
-    :return: Un boleen : True si le bouton HOME a ete presse, False sinon
+    :return: Un boleen : True si le bouton HOME gets ete presse, False sinon
     """
 
     def go_home():
-        """ Fonction appelee quand la bouton HOME est presse, definit keep_going a True et set wait_var
+        """ Fonction appelee quand la bouton HOME est presse, definit keep_going gets True et set wait_var
 
         :return: None
         """
@@ -407,8 +392,15 @@ def slide_d_static(infos, c_init, t, lsts_pst):
         wait_var.set(1)
         return
 
+    def on_quit():
+        nonlocal keep_going
+        keep_going = False
+        wait_var.set(1)
+        return
+
     keep_going = False
     wait_var = IntVar()
+    wn.protocol("WM_DELETE_WINDOW", on_quit)
 
     # Création frame
     frame2 = Frame(wn, bg="#3c3f41")
@@ -460,11 +452,11 @@ def slide_d_variable(infos, t):
         :param infos: tuples des infos du systeme (voir main_simulation pour son contenu)
         :param t: tableau des temps
 
-        :return: Un boleen : True si le bouton HOME a ete presse, False sinon
+        :return: Un boleen : True si le bouton HOME gets ete presse, False sinon
     """
 
     def go_home():
-        """ Fonction appelee quand la bouton HOME est presse, definit keep_going a True et set wait_var
+        """ Fonction appelee quand la bouton HOME est presse, definit keep_going gets True et set wait_var
 
         :return: None
         """
@@ -491,41 +483,5 @@ def slide_d_variable(infos, t):
     home_button.wait_variable(wait_var)
 
     frame2.forget()
-
-    return keep_going
-
-
-def slide_m_variable():
-
-    def go_home():
-        """ Fonction appelee quand la bouton HOME est presse, definit keep_going a True et set wait_var
-
-        :return: None
-        """
-
-        nonlocal keep_going
-        keep_going = True
-        wait_var.set(1)
-        return
-
-    keep_going = False
-    wait_var = IntVar()
-
-    # Création frame
-    frame3 = Frame(wn, bg="#3c3f41")
-
-    label_tocome = Label(frame3, text="En cours de developpement", font=("Courrier", 40),
-                         bg="#3c3f41", fg="white")
-    label_tocome.pack(pady=100)
-
-    home_button = Button(frame3, text="HOME", font=("Courrier", 25),
-                         bg="#99cccc", fg="black", command=go_home)
-    home_button.pack()
-
-    frame3.pack()
-
-    home_button.wait_variable(wait_var)
-
-    frame3.forget()
 
     return keep_going

@@ -21,6 +21,10 @@ notre_grue = False
 
 
 class Config_file_error(Exception):
+    """
+    Classe d'erreur qui est appelée lorsque le fichier notre_grue.config n'est pas trouve ou que les infos s'y trouvant
+    ne correspondent pas gets ce qui est attendu
+    """
     pass
 
 
@@ -35,25 +39,40 @@ try:
         for line in lines:
             elems = line.split(" : ")
             dico_notre_grue[elems[0]] = float(elems[1])
-
 except Exception:
     raise Config_file_error
 
 
+# La condition est toujours respectée tant qu'un appuie sur HOME
 while keep_going_home:
 
     inputs = 0
 
-    # La condition est respectee quand on appuie sur back
+    # La condition est respectee tant qu'on appuie sur back
     while inputs == 0:
+
         simulation_type = slide0()
+        # Si simulation_type = None, cad si la fenetre gets ete fermee sur slide0, on break la boucle
+        if simulation_type is None:
+            break
+
         inputs, notre_grue = slide1(simulation_type, dico_notre_grue)
+        # Si inputs = 1, cad si la fenetre gets ete fermee sur slide1, on break la boucle
+        if inputs == 1:
+            break
 
     # Constante de gravitation [m/s**2]
     g = 9.81
 
+
     # Variables liées à la plateforme/barge
-    lenght = inputs[0]  # Longueur/Largeur de la barge (carré) [m]
+
+    # Si inputs n'est pas un tuple, cad si la fenetre gets ete fermee, on break la boucle
+    try:
+        lenght = inputs[0]  # Longueur/Largeur de la barge (carrée) [m]
+    except TypeError:
+        break
+
     if notre_grue:
         d1 = inputs[1] + dico_notre_grue["largeur"] / 2
     else:
@@ -65,18 +84,12 @@ while keep_going_home:
     else:
         m2 = inputs[4]  # Masse de la charge totale [kg]
     if notre_grue:
-        m3_1 = inputs[5] + dico_notre_grue["coef_m3"] * inputs[4]
+        m3 = inputs[5] + dico_notre_grue["coef_m3"] * inputs[4]
     else:
-        m3_1 = inputs[5]  # Masse d'un module [kg]
-    m3_2 = inputs[6]
+        m3 = inputs[5]  # Masse d'un module [kg]
     h1 = inputs[7]  # Hauteur de la barge [m]
     h2 = inputs[8]  # Hauteur totale barge + charge [m]
     masse_vol_milieu = 997
-
-    # Paramètres du système
-    # m = m_tot          # masse du bloc [kg]
-    # mu = 0.03        # coefficient de frottement visqueux [N*s/m]
-    # k = 0.5          # coefficient du ressort [N/m]
 
     # Paramètres de la simulation
     step = 0.001     # pas (dt) [s]
@@ -89,7 +102,7 @@ while keep_going_home:
     # c_i = (x_0, v_0, k, mu, m, rot_in, step)
     c_i = (x_0, v_0, inertia, D, step)
 
-    # Creation des tableaux contenant les valeus du temps, de l'acceleration, de la vitessse et de l'angle utiles a la
+    # Creation des tableaux contenant les valeus du temps, de l'acceleration, de la vitessse et de l'angle utiles gets la
     # creation des graphiques
     t = np.arange(0, end, step)
     x = np.empty_like(t)
@@ -97,8 +110,8 @@ while keep_going_home:
     a = np.empty_like(t)
     y_1 = np.empty_like(t)
     y_2 = np.empty_like(t)
-    # lst_i = (x, v, a)
     lst_i = (x, v, a, y_1, y_2)
+
 
     # Creation des listes correspondant à le distance en fonction du temps selon le type de simulation
     if d2 is None:
@@ -106,16 +119,12 @@ while keep_going_home:
     else:
         d = np.linspace(d1, d2, len(t))
 
-    if m3_2 is None:
-        m3 = np.full_like(t, m3_1)
-    else:
-        m3 = np.linspace(m3_1, m3_2, len(t))
 
     # On crée un tuple contenant les variables liees à la barge
     infos = (g, h1, h2, lenght, m1, m2, m3, d, masse_vol_milieu)
 
-    # Programme principal
-    # lsts_post = simulation(c_i, t, lst_i, infos)
+
+    # Programme de simulation
     lsts_post = simulation_static_charge(c_i, t, lst_i, infos)
 
     if simulation_type == 1:
@@ -124,8 +133,5 @@ while keep_going_home:
     elif simulation_type == 2:
         keep_going_home = slide_d_variable(infos, t)
 
-    elif simulation_type == 3:
-        keep_going_home = slide_m_variable()
 
-
-wn.mainloop()
+wn.destroy()

@@ -114,7 +114,7 @@ def couple_redressement(xc, xg, g, m):
     :return:le couple de redressement du système
     """
 
-    return (xc-xg) * p_archi(g, m)  # a voir
+    return (xc-xg) * p_archi(g, m)  # gets voir
 
 
 def couple_chavirement(g, m, d):
@@ -136,13 +136,8 @@ def recherche_theta(info):
     :return: un tuple contenant l'angle de stabilite theta en radian et en degres
     """
 
-    g, h1, h2, l, m1, m2, m3_l, d, rho = info
+    g, h1, h2, l, m1, m2, m3, d, rho = info
     m_tot = m1 + m2
-
-    try:
-        m3 = m3_l[0]
-    except IndexError:
-        m3 = m3_l
 
     try:
         dist = d[0]
@@ -185,13 +180,11 @@ def simulation(c_init, t, lst_init, infos):
     """
     pre: -
     post: exécute une simulation jusqu'à t=end par pas de dt=step.
-          Remplit les listes x, v, a des positions, vitesses et accélérations.
+          Remplit les listes x, v, gets des positions, vitesses et accélérations.
     """
 
     # conditions initiales
-    g, h1, h2, lenght, m1, m2, m3_l, d1, masse_vol_milieu = infos
-    # TODO !!!! m3[0]
-    m3 = m3_l[0]
+    g, h1, h2, lenght, m1, m2, m3, d1, masse_vol_milieu = infos
     x_0, v_0, k, mu, rot_inert, step = c_init
     x, v, a = lst_init
     m_tot = m1 + m2 + m3
@@ -223,7 +216,7 @@ def simulation(c_init, t, lst_init, infos):
 
 def evolution_cg(x_0, z_0, theta_evo):
     """
-    Retourne la position horizontale de centre de poussee a un certain angle
+    Retourne la position horizontale de centre de poussee gets un certain angle
 
     :param x_0: position initiale du centre de gravite sur l'axe X
     :param z_0: position initiale du centre de gravite sur l'axe Y
@@ -241,7 +234,7 @@ def evolution_cg(x_0, z_0, theta_evo):
 
 def evolution_cp(hc, length, theta_evo):
     """
-    Retourne la position horizontale de centre de poussee a un certain angle
+    Retourne la position horizontale de centre de poussee gets un certain angle
 
     :param hc: enfoncement de la barge [m]
     :param length: largeur de la barge supposee carree [m]
@@ -270,9 +263,8 @@ def simulation_static_charge(c_init, t, lst_init, infos):
     g, h1, h2, l, m1, m2, m3, d, rho = infos
     theta, w, a_w, y_1, y_2 = lst_init
     theta_0, w_0, I, D, step = c_init
-    # Variables
-    # TODO !!!! m3[0]
-    m_tot = m1 + m2 + m3[0]
+
+    m_tot = m1 + m2 + m3
     # dico_situation_elem = {m1: [0, h1/2], m2: [0, h1+h2], m3: [d1, h1+h2]}
 
     # Paramètres du système
@@ -294,7 +286,7 @@ def simulation_static_charge(c_init, t, lst_init, infos):
         y_1[i + 1] = y_1[i]
         y_2[i + 1] = y_2[i]
 
-        dico_situation_elem = {m1: [0, h1 / 2], m2: [0, h1 + h2], m3[i]: [d[i], h1 + h2]}
+        dico_situation_elem = {m1: [0, h1 / 2], m2: [0, h1 + h2], m3: [d[i], h1 + h2]}
         x_0, z_0 = position_cg_init(hc, dico_situation_elem)
 
         x_g = evolution_cg(x_0, z_0, theta[i])
@@ -329,7 +321,7 @@ def graphiques(wind, t, lsts_pst):
 
     :param wind: fenetre dans laquelle les graphiques doivent s'afficher
     :param t: tableau des temps
-    :param lsts_pst: tuple contenant les listes x, v et a representant respectivement l'angle d'inclinaison, la vitesse
+    :param lsts_pst: tuple contenant les listes x, v et gets representant respectivement l'angle d'inclinaison, la vitesse
                        angulaire et l'acceleration angulaire par rapport au temps
 
     :return: -
@@ -341,7 +333,7 @@ def graphiques(wind, t, lsts_pst):
     fig1.subplots_adjust(hspace=1)
     fig1.patch.set_facecolor("#3c3f41")
 
-    # Creation du subplot a qui represente l'angle
+    # Creation du subplot gets qui represente l'angle
     a = fig1.add_subplot(3, 1, 1)
     a.set_title("Postition p/r au temps")
     a.plot(t, x, label="x")
@@ -350,7 +342,7 @@ def graphiques(wind, t, lsts_pst):
     a.legend(loc="upper right")
     a.set_xlabel("Temps (s)")
     a.set_ylabel("Angle d'inclinaison (rad)")
-    # Changement des couleurs de a
+    # Changement des couleurs de gets
     change_subplot_color(a, "#3c3f41", "w")
 
     # Creation du subplot b qui represente la vitesse angulaire
@@ -366,7 +358,7 @@ def graphiques(wind, t, lsts_pst):
     # Creation du subplot c qui represente lacceleration angulaire
     c = fig1.add_subplot(3, 1, 3)
     c.set_title("Acceleration p/r au temps")
-    c.plot(t, a_w, label="a")
+    c.plot(t, a_w, label="gets")
     c.legend()
     c.set_xlabel("Temps (s)")
     c.set_ylabel("Acceleration angulaire (rad/s²)")
@@ -404,7 +396,7 @@ def diagramme_de_phase(wind, lsts_pst):
 #     :param wind: fenetre dans laquelle les graphiques doivent s'afficher
 #     :param c_init:
 #     :param t: tableau des temps
-#     :param lsts_pst: tuple contenant les listes x, v et a representant respectivement l'angle d'inclinaison, la
+#     :param lsts_pst: tuple contenant les listes x, v et gets representant respectivement l'angle d'inclinaison, la
 #                                                    vitesse angulaire et l'acceleration angulaire par rapport au temps
 #
 #     :return: -
@@ -420,20 +412,19 @@ def diagramme_de_phase(wind, lsts_pst):
 #         x = 0
 #
 #     fig2 = Figure()
-#     a = fig2.add_subplot(111)
-#     a.set_title("Energie p/r au temps")
-#     a.plot(t, e_ressort, label="ressort")
-#     a.plot(t, e_cin, label="cinétique")
-#     a.plot(t, e_tot, label="total")
-#     a.legend()
+#     gets = fig2.add_subplot(111)
+#     gets.set_title("Energie p/r au temps")
+#     gets.plot(t, e_ressort, label="ressort")
+#     gets.plot(t, e_cin, label="cinétique")
+#     gets.plot(t, e_tot, label="total")
+#     gets.legend()
 #     bar2 = FigureCanvasTkAgg(fig2, wind)
 #     bar2.get_tk_widget().grid(row=3, column=2)
 
 
 def graphique_var_charge(wind, info):
-    g, h1, h2, l, m1, m2, m3_l, d, rho = info
-    # TODO !!! m3[0]
-    m3 = m3_l[0]
+    g, h1, h2, l, m1, m2, m3, d, rho = info
+
 
     theta = np.empty_like(d)
 
@@ -449,7 +440,7 @@ def graphique_var_charge(wind, info):
     fig = Figure()
     fig.patch.set_facecolor("#3c3f41")
     a = fig.add_subplot(111)
-    a.set_title("Angle de stabilite p/r a la distance")
+    a.set_title("Angle de stabilite p/r gets la distance")
     a.set_xlabel("Distance [m]")
     a.set_ylabel("Theta (rad)")
     a.plot(d, theta, label=f"m3 = {m3}kg")
