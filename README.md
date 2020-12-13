@@ -2,6 +2,8 @@
 
 Ce programme est le programme de simulation du projet 1 (LEPL-1501) du groupe 11.82.
 
+<img src="https://github.com/Guillaume-HIS/LEPL-1501-Groupe-11.82/blob/main/logo.png?raw=true" width=150>
+
 ### Auteurs :
   - Guillaume HISETTE
   - Hippolyte HILGERS
@@ -13,6 +15,7 @@ Ce programme est le programme de simulation du projet 1 (LEPL-1501) du groupe 11
 ### Tuteur du projet:
   - Hadrien LIBIOULLE
 
+---
 
 ## Utilisation
 
