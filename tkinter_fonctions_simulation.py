@@ -100,7 +100,7 @@ def slide0():
     frame0_1.pack()
 
     # Cree le logo de groupe affiche entre les deux boutons de sim
-    picture_logo = ImageTk.PhotoImage(Image.open("logo.png").resize((200, 200), Image.ANTIALIAS))
+    picture_logo = ImageTk.PhotoImage(Image.open("logo2.png").resize((200, 200), Image.ANTIALIAS))
     logo = Label(frame0, image=picture_logo, bd=0)
     logo.pack(pady=25)
 
