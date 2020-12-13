@@ -108,7 +108,9 @@ while keep_going_home:
     end = 10       # durée [s]
     x_0 = 0.000000001  # angle d'inclinaison initial [radian]
     v_0 = 0  # vitesse angulaire initiale [radian/s]
-    inertia = 7.95  # moment d'inertie total [N*m ou kg*m^2*s^2]
+
+    inertia = dico_notre_grue["moment_inertie"] if notre_grue else 7.25  # moment d'inertie total [N*m ou kg*m^2*s^2]
+
     D = 10.0  # coefficient d'amortissement total [N*m*s]
     # rot_in = 50
     # c_i = (x_0, v_0, k, mu, m, rot_in, step)

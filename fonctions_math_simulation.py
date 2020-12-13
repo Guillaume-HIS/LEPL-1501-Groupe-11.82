@@ -380,6 +380,10 @@ def diagramme_de_phase(wind, lsts_pst):
     bar2.get_tk_widget().grid(row=3, column=2, padx=20)
 
 
+"""
+    Les 30 lignes suivantes mises en commentaires sont notre tentative à creer un graphique de l'evolution des energies
+    Malheureusement, nous ne sommes pas arrives a un resultat qui avait du sens et avons decide de ne pas l'implementer. 
+"""
 # def graphiques_energie(wind, c_init, t, lsts_pst):
 #     """
 #     Affiche un graphique contenant une courbe l'energie potentielle, une de l'en. cinetique et une de l'en. totale
@@ -433,7 +437,7 @@ def graphique_var_charge(wind, info):
     a.set_title("Angle de stabilite p/r a la distance")
     a.set_xlabel("Distance [m]")
     a.set_ylabel("Theta (rad)")
-    a.plot(d, theta, label=f"m3 = {m3}kg")
+    a.plot(d, theta, label="Angle d'inclinaison")
     a.plot(d, submertion, "--", label="Submertion")
     a.plot(d, soulevement, "--", label="Soulevement")
     a.legend()
