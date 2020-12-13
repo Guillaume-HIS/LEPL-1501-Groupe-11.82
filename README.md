@@ -7,7 +7,7 @@ Ce programme est le programme de simulation du projet 1 (LEPL-1501) du groupe 11
 ### Auteurs :
   - Guillaume HISETTE
   - Hippolyte HILGERS
-  - Lancelot HEYMMANS
+  - Lancelot HEYMANS
   - Aurélien HERMANT
   - Antoine HOCHART
   - François HOLOGNE
