@@ -34,6 +34,17 @@ Le programme est séparé en trois fichiers de code :
 
 Pour executer le programme, il faut executer le fichier main_simulation.py
 
+### Fichier config
+
+Le fichier config contient 7 éléments :
+  - largeur : x où x représente la largeur/longueur de la barge carrée
+  - m1 : x où x représente la masse de la barge
+  - m2 : x où x représente la masse de la grue qui est placée sur la barge
+  - h1 : x où x représente la hauteur de la barge
+  - h2 : x où x représente la hauteur à laquelle la grue est placée sur la barge
+  - coef_m3 : x où x représente un coefficient qui a été calculé par essai/erreur avec les mesures d'angles effectuées
+  - moment_inertie : x où x représente le moment d'inertie du système sur son axe d'oscillation
+
 ### Problèmes connus
 
 Si vous eprouver des difficultes avec le fichier notre_grue.config ou recevez des erreurs
@@ -48,3 +59,4 @@ par
 dico_notre_grue = {}
 ~~~
 et de ne pas cliquer sur le bouton notre grue lors de l'execution
+
