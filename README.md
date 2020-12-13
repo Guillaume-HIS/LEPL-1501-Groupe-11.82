@@ -25,7 +25,7 @@ Ce programme est le programme de simulation du projet 1 (LEPL-1501) du groupe 11
   - matplotlib pour l'affichage des graphiques
   - numpy
   
-### Execution
+### Exécution
 
 Le programme est séparé en trois fichiers de code : 
   - main_simulation.py
