@@ -71,13 +71,12 @@ def slide0():
     # Ajout d'un subframe dans frame0 contenant une grille
     frame0_1 = Frame(frame0, bg="#3c3f41")
     frame0_1.grid_rowconfigure(3)
-    frame0_1.grid_columnconfigure(2)
+    frame0_1.grid_columnconfigure(3)
 
     # Cree le bouton correspondant gets la sim avec d fixe ainsi que son label et les paque dans frame0_1
     label_all_static = Label(frame0_1, text="Distance et charge fixe", font=("Courrier", 20),
                              bg="#3c3f41", fg="white")
     label_all_static.grid(row=0, column=0, padx=50)
-
     picture1 = ImageTk.PhotoImage(Image.open("image_enoncee_all_static.png").resize((400, 222), Image.ANTIALIAS))
     button_all_static = Button(frame0_1, image=picture1, bg="#99cccc", fg="black", command=choice_all_static)
     button_all_static.grid(row=1, column=0, padx=50)
@@ -85,10 +84,10 @@ def slide0():
     # Cree le bouton correspondant gets la sim avec d variable ainsi que son label et les paque dans frame0_1
     label_variable = Label(frame0_1, text="Distance variable et chage fixe", font=("Courrier", 20),
                            bg="#3c3f41", fg="white")
-    label_variable.grid(row=0, column=1, padx=50)
+    label_variable.grid(row=0, column=2, padx=50)
     picture2 = ImageTk.PhotoImage(Image.open("image_enoncee_d_variable.png").resize((400, 222), Image.ANTIALIAS))
     button_variable = Button(frame0_1, image=picture2, bg="#99cccc", fg="black", command=choice_d_variable)
-    button_variable.grid(row=1, column=1, padx=50)
+    button_variable.grid(row=1, column=2, padx=50)
 
     nothing = Label(frame0_1, bg="#3c3f41")
     nothing.grid(row=2, column=0, pady=10)
@@ -99,6 +98,12 @@ def slide0():
     frame0_2.grid_columnconfigure(1)
 
     frame0_1.pack()
+
+    # Cree le logo de groupe affiche entre les deux boutons de sim
+    picture_logo = ImageTk.PhotoImage(Image.open("logo.png").resize((200, 200), Image.ANTIALIAS))
+    logo = Label(frame0, image=picture_logo, bd=0)
+    logo.pack(pady=25)
+
     frame0_2.pack()
     frame0.pack()
 

@@ -424,7 +424,7 @@ def graphique_var_charge(wind, info):
 
         theta[i] = recherche_theta(info2)[0]
 
-    submertion = np.full_like(d, - theta_max(h1, enfoncement(rho, l, m1 + m2 + m3), l)[0])
+    submertion = np.full_like(d, abs(theta_max(h1, enfoncement(rho, l, m1 + m2 + m3), l)[0]))
     soulevement = np.full_like(d, theta_max(h1, enfoncement(rho, l, m1 + m2 + m3), l)[1])
 
     fig = Figure()
