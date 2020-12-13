@@ -48,9 +48,9 @@ def position_cg_init(hc, dico_situation_elem):
     y = 0
     m = 0
     for masse in dico_situation_elem:
-        x += dico_situation_elem[masse][0] * masse
-        y += dico_situation_elem[masse][1] * masse
-        m += int(masse)
+        x += dico_situation_elem[masse][0] * float(masse)
+        y += dico_situation_elem[masse][1] * float(masse)
+        m += float(masse)
     x = x/m
     y = (y/m) - hc
     return x, y
@@ -91,21 +91,11 @@ def position_cg_rota(xg, yg, theta):
 
 
 def position_cp_rota(theta, length, hc):
-    """
-    :param theta: un certain angle (en rad)
-    :param length: La largeur de la barge, supposée carrée, (en m)
-    :param hc: La hautteur d'enfoncement de la barge (en m)
-    :return: La nouvelle position du centre de gravité en fonction de la valeur de length'angle théta
-    """
-
-    h_inclin = (length / 2) * math.tan(theta)
-    h_1 = hc+h_inclin
-    h_2 = hc - h_inclin
-    l_trap = length * (h_1 + 2 * h_2) / (3 * (h_1 + h_2))
-    h_trap = (h_1**2 + h_1 * h_2 + h_2**2)/(3*(h_1+h_2))
-    a = (length / 2) - l_trap
-    b = h_trap - hc
-    return math.cos(theta)*a - math.sin(theta)*b, math.cos(theta)*b + math.sin(theta)*a
+    a_im = length * hc
+    hl = (a_im/length) + (length/2) * math.tan(theta)
+    hr = hl - length * math.tan(theta)
+    xc = (length/3)*((2*hl + hr)/(hl + hr)) - (length/2)
+    return xc, 0
 
 
 def couple_redressement(xc, xg, g, m):
@@ -137,7 +127,7 @@ def recherche_theta(info):
     """
 
     g, h1, h2, l, m1, m2, m3, d, rho = info
-    m_tot = m1 + m2
+    m_tot = m1 + m2 + m3
 
     try:
         dist = d[0]
@@ -151,25 +141,26 @@ def recherche_theta(info):
     theta_degres = theta * 180 / math.pi  # Angle d'inclinaison en degres
     dico = {m1: [0, h1/2], m2: [0, (h1+h2)]}
 
+    hc = enfoncement(rho, 1, m_tot)
+    xcg = position_cg_init(hc, dico)[0]
+    ycg = position_cg_init(hc, dico)[1]
+
     while not found:
 
-        hc = enfoncement(rho, 1, m_tot)
-        xcg = position_cg_init(hc, dico)[0]
-        ycg = position_cg_init(hc, dico)[1]
         cg_x, cg_y = position_cg_rota(xcg, ycg, theta)
         cp_x, cp_y = position_cp_rota(theta, l, hc)
-        cr = couple_redressement(cp_x, cg_x, g, m_tot)  # Couple de redressement [N/m]
+        cr = couple_redressement(cp_x, cg_x, g, m1 + m2)  # Couple de redressement [N/m]
         ci = couple_chavirement(g, m3, dist)   # Couple d'inclinaison [N/m]
 
         # Recherche dichotomique
-        if abs(abs(cr) - abs(ci)) < 10**(-5):
+        if abs(abs(cr) - abs(ci)) < 10**(-6):
             found = True
         elif abs(cr) < abs(ci):
             angle_min = theta
-            theta = (angle_min + angle_max)/2
+            theta = (angle_min + angle_max) / 2
         elif abs(cr) > abs(ci):
             angle_max = theta
-            theta = (angle_min+angle_max)/2
+            theta = (angle_min + angle_max) / 2
 
         theta_degres = theta * 180/math.pi
 
@@ -337,8 +328,8 @@ def graphiques(wind, t, lsts_pst):
     a = fig1.add_subplot(3, 1, 1)
     a.set_title("Postition p/r au temps")
     a.plot(t, x, label="x")
-    a.plot(t, y_2, "r", label="Theta max")
-    a.plot(t, y_1, "r")
+    a.plot(t, y_2, "--r", label="Theta max")
+    a.plot(t, y_1, "--r")
     a.legend(loc="upper right")
     a.set_xlabel("Temps (s)")
     a.set_ylabel("Angle d'inclinaison (rad)")
@@ -358,7 +349,7 @@ def graphiques(wind, t, lsts_pst):
     # Creation du subplot c qui represente lacceleration angulaire
     c = fig1.add_subplot(3, 1, 3)
     c.set_title("Acceleration p/r au temps")
-    c.plot(t, a_w, label="gets")
+    c.plot(t, a_w, label="a")
     c.legend()
     c.set_xlabel("Temps (s)")
     c.set_ylabel("Acceleration angulaire (rad/s²)")
@@ -425,7 +416,6 @@ def diagramme_de_phase(wind, lsts_pst):
 def graphique_var_charge(wind, info):
     g, h1, h2, l, m1, m2, m3, d, rho = info
 
-
     theta = np.empty_like(d)
 
     for i in range(len(d)):
@@ -434,13 +424,13 @@ def graphique_var_charge(wind, info):
 
         theta[i] = recherche_theta(info2)[0]
 
-    submertion = np.full_like(d, theta_max(h1, enfoncement(rho, l, m1 + m2 + m3), l)[0])
+    submertion = np.full_like(d, - theta_max(h1, enfoncement(rho, l, m1 + m2 + m3), l)[0])
     soulevement = np.full_like(d, theta_max(h1, enfoncement(rho, l, m1 + m2 + m3), l)[1])
 
     fig = Figure()
     fig.patch.set_facecolor("#3c3f41")
     a = fig.add_subplot(111)
-    a.set_title("Angle de stabilite p/r gets la distance")
+    a.set_title("Angle de stabilite p/r a la distance")
     a.set_xlabel("Distance [m]")
     a.set_ylabel("Theta (rad)")
     a.plot(d, theta, label=f"m3 = {m3}kg")

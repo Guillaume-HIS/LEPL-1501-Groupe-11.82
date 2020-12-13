@@ -4,6 +4,14 @@
 
     Ce fichier est le fichier principal de la simulation sont execution cree une fenêtre qui invite l'utilisateur à
     entrer des informations utiles à la simulation concernant la grue en elle-meme
+
+    Modules necessaires : PIL, numpy, matplotlib, tkinter
+
+    NB : Si vous eprouver des difficultes avec le fichier notre_grue.config ou recevez des erreurs
+    du type Config_file_error, le programme peut toujours fonctionner sans les donnees de notre grue et donc en
+    fonctionnant tel que decrit dans l'exercice de physique 2.
+    Pour ce faire il suffit de modifier la ligne 53 : dico_notre_grue = open_config_file() par dico_notre_grue = {}
+    et de ne pas cliquer sur le bouton notre grue lors de l'execution
 """
 
 
@@ -11,39 +19,43 @@
 from tkinter_fonctions_simulation import *
 
 
-# Initialisation de la fenetre (deja ouverte) et recuperation des infos entrees par l'utilisateur dans le tuple inputs
+def open_config_file(filename="notre_grue.config"):
+    class Config_file_error(Exception):
+        """
+        Classe d'erreur qui est appelée lorsque le fichier notre_grue.config n'est pas trouve ou que les
+        infos s'y trouvant ne correspondent pas a ce qui est attendu
+        """
+        pass
+
+    # Ouvre le fichier notre_grue.config et entre ses valeurs dans un dictionnaire
+    dico = {}
+    try:
+        with open(filename) as file:
+            lines = []
+            for k in file:
+                line = k.replace("\n", "")
+                lines.append(line)
+
+            for line in lines:
+                elems = line.split(" : ")
+                dico[elems[0]] = float(elems[1])
+
+            return dico
+    except Exception:
+        raise Config_file_error
+
+
+# Initialisation de la fenetre (deja ouverte) et initialisation d'un certain nombre de variable
 inputs = 0
 window_init(wn)
 simulation_type = 0
 keep_going_home = True
-dico_notre_grue = {}
+dico_notre_grue = open_config_file()
 notre_grue = False
 
 
-class Config_file_error(Exception):
-    """
-    Classe d'erreur qui est appelée lorsque le fichier notre_grue.config n'est pas trouve ou que les infos s'y trouvant
-    ne correspondent pas gets ce qui est attendu
-    """
-    pass
-
-
-# Ouvre le fichier notre_grue.config et entre ses valeurs dans un dictionnaire
-try:
-    with open("notre_grue.config") as file:
-        lines = []
-        for k in file:
-            line = k.replace("\n", "")
-            lines.append(line)
-
-        for line in lines:
-            elems = line.split(" : ")
-            dico_notre_grue[elems[0]] = float(elems[1])
-except Exception:
-    raise Config_file_error
-
-
-# La condition est toujours respectée tant qu'un appuie sur HOME
+# La condition est toujours respectée tant qu'un appuie sur HOME, elle ne l'est plus si on ferme la fenetre lors de
+# l'affichage d'un des slide2
 while keep_going_home:
 
     inputs = 0

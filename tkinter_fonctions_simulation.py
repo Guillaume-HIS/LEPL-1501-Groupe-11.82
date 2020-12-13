@@ -429,7 +429,7 @@ def slide_d_static(infos, c_init, t, lsts_pst):
     diagramme_de_phase(frame2_1, lsts_pst)
 
     home_button = Button(frame2, text="HOME", font=("Courrier", 25),
-                         bg="#99cccc", fg="black", command=go_home)
+                         bg="#1f77b4", fg="black", command=go_home)
     home_button.pack(side="bottom", pady=25)
 
     # On paque frame2_1 et frame2 respectivement dans frame2 et wn
@@ -466,8 +466,15 @@ def slide_d_variable(infos, t):
         wait_var.set(1)
         return
 
+    def on_quit():
+        nonlocal keep_going
+        keep_going = False
+        wait_var.set(1)
+        return
+
     keep_going = False
     wait_var = IntVar()
+    wn.protocol("WM_DELETE_WINDOW", on_quit)
 
     # Création frame
     frame2 = Frame(wn, bg="#3c3f41")
