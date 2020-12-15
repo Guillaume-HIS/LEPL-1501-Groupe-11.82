@@ -50,7 +50,7 @@ Le fichier config contient 7 éléments :
 Si vous eprouver des difficultes avec le fichier notre_grue.config ou recevez des erreurs
 du type Config_file_error, le programme peut toujours fonctionner sans les donnees de notre grue et donc en
 fonctionnant tel que decrit dans l'exercice de physique 2.
-Pour ce faire il suffit de modifier la ligne 53 : 
+Pour ce faire il suffit de modifier la ligne 53 du fichier main_simulation.py: 
 ~~~python
 dico_notre_grue = open_config_file()
 ~~~
